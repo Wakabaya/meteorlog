@@ -64,14 +64,15 @@ class Meteorlog::Client
     aws_log_streams = collect_to_hash(aws_log_streams, :log_stream_name)
 
     dsl_log_streams.each do |log_stream_name, dsl_log_stream|
+      next unless Meteorlog::Utils.matched?(log_stream_name, @options[:include_stream], @options[:exclude_stream])
       aws_log_stream = aws_log_streams.delete(log_stream_name)
-
       unless aws_log_stream
         collection_api.create(log_stream_name)
       end
     end
 
     aws_log_streams.each do |log_stream_name, aws_log_stream|
+      next unless Meteorlog::Utils.matched?(log_stream_name, @options[:include_stream], @options[:exclude_stream])
       aws_log_stream.delete
     end
   end

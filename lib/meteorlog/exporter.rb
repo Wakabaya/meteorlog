@@ -41,7 +41,10 @@ class Meteorlog::Exporter
   end
 
   def export_log_streams(log_streams)
-    log_streams.map {|log_stream| log_stream.log_stream_name }
+    log_streams.map {|log_stream|
+      return unless Meteorlog::Utils.matched?(log_stream_name, @options[:include_stream], @options[:exclude_stream])
+      log_stream.log_stream_name  
+    }
   end
 
   def export_metric_filters(metric_filters)
